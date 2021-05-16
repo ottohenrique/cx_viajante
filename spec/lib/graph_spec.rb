@@ -22,44 +22,46 @@ RSpec.describe Graph do
 
       expect(graph.nodes).to eq(%w[BRC GRU XDU])
     end
+  end
 
-    it 'fails when path not found' do
-        nodes = <<-NODES
+  describe '#paths' do
+    it 'returns empty array when no route is found' do
+      nodes = <<-NODES
             A,B,10
             B,C,10
-        NODES
+      NODES
 
-        graph = Graph.new(nodes)
+      graph = Graph.new(nodes)
 
-        expect(graph.paths("A","D")).to eq([])
+      expect(graph.paths('A', 'D')).to eq([])
+      expect(graph.paths('X', 'Z')).to eq([])
     end
 
     it 'traces a basic path A-B-C' do
-        nodes = <<-NODES
+      nodes = <<-NODES
             A,B,10
             B,C,10
-        NODES
+      NODES
 
-        graph = Graph.new(nodes)
+      graph = Graph.new(nodes)
 
-        expect(graph.paths("A","C")).to eq([["A","B","C"]])
+      expect(graph.paths('A', 'C')).to eq([['A', 'B', 'C', 20]])
     end
 
     it 'traces a A-C path passing by two nodes' do
-        nodes = <<-NODES
+      nodes = <<-NODES
             A,B,10
             B,C,10
             B,D,10
             D,C,10
-        NODES
+      NODES
 
-        graph = Graph.new(nodes)
+      graph = Graph.new(nodes)
 
-        expect(graph.paths("A","C")).to eq([["A","B","C"], ["A","B","D","C"]])
+      expect(graph.paths('A', 'C')).to eq([['A', 'B', 'C', 20], ['A', 'B', 'D', 'C', 30]])
     end
 
-   
-    it 'gives all paths from node A to B' do
+    it 'traces all possible paths from node A to B' do
       nodes = <<-NODES
             GRU,CDG,75
             GRU,ORL,56
@@ -72,12 +74,23 @@ RSpec.describe Graph do
 
       graph = Graph.new(nodes)
 
-      expect(graph.paths("GRU", "CDG")).to eq([
-        ["GRU","CDG"],
-        ["GRU","ORL","CDG"],
-        ["GRU","SCL","ORL","CDG"],
-        ["GRU","BRC","SCL","ORL","CDG"]
-      ])
+      expect(graph.paths('GRU', 'CDG')).to eq([
+                                                ["GRU", "CDG", 75],
+                                                ["GRU", "ORL", "CDG", 61],
+                                                ["GRU", "SCL", "ORL", "CDG", 45],
+                                                ["GRU", "BRC", "SCL", "ORL", "CDG", 40]
+                                              ])
+    end
+
+    it 'calculates cost by path' do
+      nodes = <<-NODES
+      A,B,10
+      B,C,10
+      NODES
+
+      graph = Graph.new(nodes)
+
+      expect(graph.paths('A', 'C')).to eq([['A', 'B', 'C', 20]])
     end
   end
 end
