@@ -28,10 +28,8 @@ class App
     end
   end
 
-  private
-
   def cheapest_route(from, to)
-    paths = @graph.paths(from, to)
+    paths = @graph.paths(from.upcase, to.upcase)
 
     return "Nenhuma rota encontrada para #{from}-#{to}..." if paths.empty?
 
