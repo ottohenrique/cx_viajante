@@ -75,3 +75,7 @@ Note: Unnecessary use of -X or --request, POST is already inferred.
 * Connection #0 to host localhost left intact
 Rota TAU,GAL,85 adicionada com sucesso
 ```
+
+## Possíveis melhorias e descobertas
+- Não foi adotada nenhuma estratégia de programação dinânimca no algorítmo de busca, como excluir rotas já percorridas.
+- Poderia ter usado a biblioteca básica de testes do ruby `minitest`, evitando a dependência do rspec (https://github.com/seattlerb/minitest)
